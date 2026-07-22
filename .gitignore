@@ -1,0 +1,15 @@
+# Build output
+bin/
+obj/
+
+# Rider / VS
+.vs/
+.idea/
+*.user
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Local runtime state (not source)
+# connections.json is a sample and IS tracked; edit locally as needed.

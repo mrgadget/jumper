@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>uJump</AssemblyName>
+    <RootNamespace>uJump</RootNamespace>
+    <ApplicationTitle>uJump</ApplicationTitle>
+    <Version>1.0.0</Version>
+    <ApplicationIcon>uJump.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Embed the icon so the window/taskbar can reference it too. -->
+    <Resource Include="uJump.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Keep the WPF code clean: don't globally import WinForms (it collides with
+         WPF on Application, MessageBox, etc.). The one file that hosts the
+         ActiveX control imports System.Windows.Forms explicitly. -->
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Ship a sample connections file next to the exe, but never overwrite the
+         user's edited copy on rebuild. -->
+    <None Update="connections.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

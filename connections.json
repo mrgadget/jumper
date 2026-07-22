@@ -1,0 +1,12 @@
+{
+  "Connections": [
+    {
+      "Name": "Home Jumphost",
+      "Host": "10.8.8.50",
+      "Port": 3389,
+      "Group": "Home",
+      "SmartSizing": true,
+      "FullScreen": true
+    }
+  ]
+}

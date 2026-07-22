@@ -1,0 +1,62 @@
+<Window x:Class="uJump.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+        Title="uJump" Height="900" Width="1400" Icon="uJump.ico"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanResize"
+        FontFamily="Segoe UI" FontSize="13"
+        Closing="Window_Closing">
+    <Grid x:Name="RootGrid">
+
+        <!-- Session view (hidden until connected). -->
+        <Grid x:Name="SessionPanel" Background="Black" Visibility="Collapsed">
+            <wfi:WindowsFormsHost x:Name="FormsHost" />
+
+            <!-- Auto-hide control bar. A Popup lives in its own top-level window, so
+                 it reliably renders above the RDP control's child HWND. It is
+                 revealed by cursor polling when the pointer hits the top edge. -->
+            <Popup x:Name="TopBar" PlacementTarget="{Binding ElementName=RootGrid}"
+                   Placement="Relative" VerticalOffset="0" HorizontalOffset="0"
+                   AllowsTransparency="True" StaysOpen="True" Focusable="False">
+                <Border Width="{Binding ActualWidth, ElementName=RootGrid}"
+                        Background="#F0202020">
+                    <Grid>
+                        <TextBlock x:Name="BarTitle" Foreground="#DDD" VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" Margin="14,0,0,0" FontWeight="SemiBold" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,7">
+                            <ToggleButton x:Name="SmartToggle" Content="Smart resize"
+                                          Style="{StaticResource BarToggle}" Margin="4,0" Click="Smart_Click"
+                                          ToolTip="Scale the remote desktop to fit the window (live)" />
+                            <Button x:Name="ModeButton" Content="Full screen"
+                                    Style="{StaticResource BarButton}" Margin="4,0" Click="Mode_Click" />
+                            <Button Content="Close" Style="{StaticResource BarButton}"
+                                    Margin="4,0" Click="Close_Click" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Popup>
+        </Grid>
+
+        <!-- Launcher view. -->
+        <Grid x:Name="LauncherPanel" Background="#F4F6F9">
+            <GroupBox Header="Connect to a jumphost" Padding="26,22" Width="460"
+                      VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel>
+                    <ComboBox x:Name="ServerCombo" Style="{StaticResource ModernComboBox}"
+                              DisplayMemberPath="Name" />
+
+                    <Grid Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="This Window" Height="46" Click="Windowed_Click" />
+                        <Button Grid.Column="2" Content="Full screen" Height="46" IsDefault="True"
+                                Style="{StaticResource AccentButton}" Click="Fullscreen_Click" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>
