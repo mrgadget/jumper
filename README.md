@@ -7,7 +7,9 @@ gives proper live smart-sizing the standalone `mstsc` window handles poorly.
 ## How it works
 
 - Connections live in `connections.json` next to the executable — edit it by hand
-  to add jumphosts.
+  to add jumphosts. On first run it's seeded from `connections.example.json`.
+  `connections.json` is personal and git-ignored; the tracked example is the
+  template.
 - The launcher is just a **server picker** (defaults to the last-connected one)
   and two buttons:
   - **Windowed** — opens the session in a normal resizable window.
@@ -48,6 +50,9 @@ dotnet run
 ```
 
 ## connections.json
+
+Copy `connections.example.json` to `connections.json` (or just run the app once
+to have it seeded automatically), then edit:
 
 ```json
 {

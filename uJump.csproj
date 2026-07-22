@@ -29,6 +29,9 @@
   <ItemGroup>
     <!-- Ship a sample connections file next to the exe, but never overwrite the
          user's edited copy on rebuild. -->
+    <None Update="connections.example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="connections.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

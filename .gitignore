@@ -11,5 +11,6 @@ obj/
 Thumbs.db
 .DS_Store
 
-# Local runtime state (not source)
-# connections.json is a sample and IS tracked; edit locally as needed.
+# Local connection list (personal). Ships as connections.example.json; copy it
+# to connections.json and edit. The real file is never tracked.
+connections.json

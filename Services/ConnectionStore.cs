@@ -17,19 +17,24 @@ public class ConnectionStore
     };
 
     public string FilePath { get; }
+    private readonly string _examplePath;
 
     public ConnectionStore()
     {
         FilePath = Path.Combine(AppContext.BaseDirectory, "connections.json");
+        _examplePath = Path.Combine(AppContext.BaseDirectory, "connections.example.json");
     }
 
     public List<Connection> Load()
     {
         if (!File.Exists(FilePath))
         {
-            var sample = SampleFile();
-            Save(sample.Connections);
-            return sample.Connections;
+            // First run: seed the personal file from the shipped example so the
+            // user has an editable starting point.
+            if (File.Exists(_examplePath))
+                File.Copy(_examplePath, FilePath);
+            else
+                Save(SampleFile().Connections);
         }
 
         var json = File.ReadAllText(FilePath);
@@ -55,17 +60,6 @@ public class ConnectionStore
                 Host = "jump01.example.com",
                 Port = 3389,
                 Username = "DOMAIN\\your.user",
-                Group = "Production",
-                Notes = "Edit connections.json to add your own hosts.",
-            },
-            new Connection
-            {
-                Name = "Example via RD Gateway",
-                Host = "10.0.0.15",
-                Port = 3389,
-                Username = "DOMAIN\\your.user",
-                Gateway = "gateway.example.com",
-                Group = "Production",
             },
         },
     };

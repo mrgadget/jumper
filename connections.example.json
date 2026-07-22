@@ -1,0 +1,19 @@
+{
+  "Connections": [
+    {
+      "Name": "Example Jumphost",
+      "Host": "jump01.example.com",
+      "Port": 3389,
+      "Username": "DOMAIN\\your.user",
+      "SmartSizing": true
+    },
+    {
+      "Name": "Example via RD Gateway",
+      "Host": "10.0.0.15",
+      "Port": 3389,
+      "Username": "DOMAIN\\your.user",
+      "Gateway": "gateway.example.com",
+      "SmartSizing": true
+    }
+  ]
+}
