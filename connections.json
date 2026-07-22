@@ -1,12 +1,11 @@
 {
   "Connections": [
     {
-      "Name": "Home Jumphost",
-      "Host": "10.8.8.50",
+      "Name": "Example Jumphost",
+      "Host": "jump01.example.com",
       "Port": 3389,
-      "Group": "Home",
-      "SmartSizing": true,
-      "FullScreen": true
+      "Username": "DOMAIN\\your.user",
+      "SmartSizing": true
     }
   ]
 }
