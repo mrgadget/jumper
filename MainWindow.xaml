@@ -26,7 +26,7 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,7">
                             <ToggleButton x:Name="SmartToggle" Content="Smart resize"
                                           Style="{StaticResource BarToggle}" Margin="4,0" Click="Smart_Click"
-                                          ToolTip="Scale the remote desktop to fit the window (live)" />
+                                          ToolTip="Fallback: scale the desktop to fit (for hosts without dynamic resolution). Off = crisp dynamic resolution." />
                             <Button x:Name="ModeButton" Content="Full screen"
                                     Style="{StaticResource BarButton}" Margin="4,0" Click="Mode_Click" />
                             <Button Content="Close" Style="{StaticResource BarButton}"

@@ -27,11 +27,12 @@ public class Connection
     public string? Group { get; set; }
 
     /// <summary>
-    /// When true, scale the remote desktop to fit the window (no reconnect on
-    /// resize). When false, the session renders at a fixed resolution and you use
-    /// "Reconnect to fit" to re-match the window size crisply.
+    /// Fallback scaling. When false (the default), the window resize is pushed to
+    /// the remote as a live resolution change (dynamic display) for a crisp 1:1
+    /// image. Set true only for hosts that don't support dynamic resolution, to
+    /// scale the fixed-resolution desktop into the window instead.
     /// </summary>
-    public bool SmartSizing { get; set; } = true;
+    public bool SmartSizing { get; set; } = false;
 
     /// <summary>Open the embedded session maximised.</summary>
     public bool FullScreen { get; set; } = true;

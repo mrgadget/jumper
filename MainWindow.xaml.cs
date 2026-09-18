@@ -14,6 +14,7 @@ public partial class MainWindow : Window
 
     private readonly DispatcherTimer _cursorTimer;
     private readonly DispatcherTimer _stateTimer;
+    private readonly DispatcherTimer _resizeTimer;
 
     private Connection? _connection;
     private RdpAxHost? _host;
@@ -35,10 +36,15 @@ public partial class MainWindow : Window
         _stateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         _stateTimer.Tick += PollState;
 
+        // Debounce window resizes: once the drag settles, push the new size to the
+        // remote as a live resolution change (dynamic display) rather than scaling.
+        _resizeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+        _resizeTimer.Tick += (_, _) => { _resizeTimer.Stop(); AdjustRemoteToViewport(); };
+
         // A Popup is a separate top-level window that doesn't follow its parent, so
         // nudge it back into place whenever the window moves or resizes.
         LocationChanged += (_, _) => RepositionTopBar();
-        SizeChanged += (_, _) => RepositionTopBar();
+        SizeChanged += OnWindowSizeChanged;
 
         LoadConnections();
     }
@@ -49,6 +55,16 @@ public partial class MainWindow : Window
         var offset = TopBar.HorizontalOffset;
         TopBar.HorizontalOffset = offset + 1;
         TopBar.HorizontalOffset = offset;
+    }
+
+    private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        RepositionTopBar();
+        if (_sessionActive)
+        {
+            _resizeTimer.Stop();
+            _resizeTimer.Start();
+        }
     }
 
     // ---- launcher -----------------------------------------------------------
@@ -140,6 +156,7 @@ public partial class MainWindow : Window
 
         _cursorTimer.Stop();
         _stateTimer.Stop();
+        _resizeTimer.Stop();
         TopBar.IsOpen = false;
 
         try { _session?.Disconnect(); } catch { }
@@ -191,7 +208,8 @@ public partial class MainWindow : Window
             ModeButton.Content = "Full screen";
         }
 
-        AdjustRemoteToViewport();
+        // The resulting size change fires SizeChanged, which pushes the new
+        // resolution to the remote (debounced) — no explicit call needed here.
     }
 
     private void Mode_Click(object sender, RoutedEventArgs e)
@@ -200,13 +218,17 @@ public partial class MainWindow : Window
         ApplyMode(!_fullscreen);
     }
 
-    /// <summary>After a resize/mode change, match the remote resolution live if the
-    /// host supports it (no reconnect); otherwise smart sizing scales the image.</summary>
+    /// <summary>
+    /// Preferred path: match the remote resolution to the window live (dynamic
+    /// display, no reconnect, crisp). Skipped when the user has switched on smart
+    /// sizing as a fallback, since scaling then handles the fit instead.
+    /// </summary>
     private void AdjustRemoteToViewport()
     {
         Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
         {
             if (_session is null || !_session.IsConnected) return;
+            if (_session.SmartSizing) return; // scaling handles the fit; don't fight it
             var (w, h) = ViewportPixels();
             _session.TryUpdateDisplay(w, h);
         });
@@ -278,6 +300,7 @@ public partial class MainWindow : Window
         _closing = true;
         _cursorTimer.Stop();
         _stateTimer.Stop();
+        _resizeTimer.Stop();
         TopBar.IsOpen = false;
         try { _session?.Disconnect(); } catch { }
         try { FormsHost.Child = null; _host?.Dispose(); } catch { }

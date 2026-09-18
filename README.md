@@ -1,8 +1,9 @@
 # uJump
 
 A minimal, single-purpose WPF launcher for connecting to jumphosts. RDP sessions
-are **embedded** using the Microsoft RDP ActiveX control (`mstscax.dll`), which
-gives proper live smart-sizing the standalone `mstsc` window handles poorly.
+are **embedded** using the Microsoft RDP ActiveX control (`mstscax.dll`). Resizing
+the window drives a crisp **dynamic resolution** change on the remote (rather than
+scaling a fixed-size desktop like the standalone `mstsc` window does).
 
 ## How it works
 
@@ -16,10 +17,14 @@ gives proper live smart-sizing the standalone `mstsc` window handles poorly.
   - **Full screen** — opens borderless, sized to the desktop **work area** so
     your local taskbar stays visible and the remote taskbar stacks above it. No
     visible UI otherwise.
+- **Resizing** the window (or switching modes) pushes the new size to the remote
+  as a live **dynamic resolution** change — no reconnect, no scaling blur — on
+  hosts that support it (Windows 8.1 / Server 2012 R2 and newer over RDP 8.1+).
 - **Auto-hide control bar** — in a session, move the mouse to the **top edge** and
   a bar drops down with:
-  - **Smart resize** — scale the remote desktop to fit the window, *live*, no
-    reconnect. Toggle any time.
+  - **Smart resize** — *fallback* scaling for hosts that don't support dynamic
+    resolution. Off by default; toggle on to scale the fixed desktop into the
+    window instead.
   - **Full screen / Windowed** — switch modes without dropping the session.
   - **Close** — end the session and return to the launcher.
 - Closing or losing the session returns you to the launcher.
@@ -62,8 +67,7 @@ to have it seeded automatically), then edit:
       "Host": "jump01.example.com",
       "Port": 3389,
       "Username": "DOMAIN\\your.user",
-      "Gateway": "gateway.example.com",
-      "SmartSizing": true
+      "Gateway": "gateway.example.com"
     }
   ]
 }
@@ -76,6 +80,6 @@ to have it seeded automatically), then edit:
 | `Port`        | no       | 3389    | RDP port                                 |
 | `Username`    | no       | —       | Pre-filled login, e.g. `DOMAIN\user`     |
 | `Gateway`     | no       | —       | RD Gateway hostname                      |
-| `SmartSizing` | no       | true    | Start with scale-to-fit on               |
+| `SmartSizing` | no       | false   | Start in scale-to-fit fallback (else dynamic resolution) |
 
 Edit the file and restart the launcher (or reopen it) to pick up changes.
